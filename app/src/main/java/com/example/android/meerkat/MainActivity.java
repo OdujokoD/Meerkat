@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void showErrorMessage() {
-        String errorMessage = "Oop!..\nWe can't seem to connect to the network.";
+        String errorMessage = "Oops!..\nWe can't seem to connect to the network.";
         mNetworkErrorContainer.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
         mNetworkMessage.setText(errorMessage);
