@@ -49,6 +49,16 @@
                     android:layout_height="wrap_content"
                     android:textSize="18sp"/>
 
+                <ImageView
+                    android:id="@+id/iv_star_image"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="10dp"
+                    android:onClick="addToFavorites"
+                    android:src="@drawable/star_grey"
+                    android:contentDescription="@string/star_movie"
+                    android:scaleType="fitXY"/>
+
             </LinearLayout>
 
         </LinearLayout>

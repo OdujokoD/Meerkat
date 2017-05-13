@@ -6,4 +6,6 @@
     <string name="label_reviews">Reviews</string>
     <string name="label_trailers">Trailers</string>
     <string name="trailer_icon">Trailer icon</string>
+    <string name="star_movie">Star image</string>
+    <string name="sort_by_favorite">Favorites</string>
 </resources>

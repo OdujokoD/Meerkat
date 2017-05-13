@@ -1,11 +1,6 @@
 package com.example.android.meerkat.utilities;
 
 public class Constants {
-    public final static String MOVIE_TITLE_EXTRA_TEXT = "movie title";
-    public final static String MOVIE_IMAGE_EXTRA_TEXT = "movie poster url";
-    public final static String MOVIE_RELEASE_DATE_EXTRA_TEXT = "movie release date";
-    public final static String MOVIE_RATING_EXTRA_TEXT = "movie rating";
-    public final static String MOVIE_OVERVIEW_EXTRA_TEXT = "movie overview";
 
     /*=================  Main activity Constants ====================== */
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -28,9 +23,23 @@ public class Constants {
     final static String MOVIE_TRAILER_PATH = "videos";
     final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     final static String TRAILER_BASE_URL = "https://www.youtube.com/watch";
-    public final static String TRAILER_KEY = "v";
-
+    final static String TRAILER_KEY = "v";
     // TODO: Add your API KEY
     final static String API_KEY = "9f92dc0a0f71e8cbe0726622a1f41305";
     final static String PARAM_API_KEY = "api_key";
+
+
+    /*=================  Favorite Movie Content Provider Constants ====================== */
+    public static final int MOVIES = 100;
+    public static final int MOVIE_WITH_ID = 101;
+    public static final int MOVIE_LOADER_ID = 11;
+
+    /*=================  Reviews Content Provider Constants ====================== */
+    public static final int REVIEW = 200;
+    public static final int REVIEW_WITH_ID = 201;
+
+    /*=================  Trailers Content Provider Constants ====================== */
+    public static final int TRAILER = 300;
+    public static final int TRAILER_WITH_ID = 301;
+
 }

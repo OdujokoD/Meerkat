@@ -1,9 +1,11 @@
 package com.example.android.meerkat;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -11,11 +13,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.meerkat.adapters.ReviewAdapter;
 import com.example.android.meerkat.adapters.TrailerAdapter;
+import com.example.android.meerkat.data.FavoriteMoviesContract;
+import com.example.android.meerkat.data.ReviewsContract;
+import com.example.android.meerkat.data.TrailersContract;
 import com.example.android.meerkat.loaders.ReviewLoader;
 import com.example.android.meerkat.loaders.TrailerLoader;
 import com.example.android.meerkat.model.Movie;
@@ -53,10 +60,17 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @BindView(R.id.rv_reviews_list)
     RecyclerView mReviewsRecyclerView;
 
-    private TrailerAdapter mTrailerAdapter;
-    private ReviewAdapter mReviewAdapter;
     private ReviewLoader reviewLoader;
     private TrailerLoader trailerLoader;
+
+    private String movieId;
+    private String movieTitle;
+    private String imageUrl;
+    private String movieReleaseDate;
+    private String movieRating;
+    private String movieOverview;
+    private List<Review> reviews;
+    private List<Trailer> trailers;
 
 
     @Override
@@ -68,13 +82,13 @@ public class MovieDetailActivity extends AppCompatActivity implements
         mTrailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mTrailerRecyclerView.setHasFixedSize(true);
 
-        mTrailerAdapter = new TrailerAdapter(this);
+        TrailerAdapter mTrailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
 
         mReviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mReviewsRecyclerView.setHasFixedSize(true);
 
-        mReviewAdapter = new ReviewAdapter();
+        ReviewAdapter mReviewAdapter = new ReviewAdapter();
         mReviewsRecyclerView.setAdapter(mReviewAdapter);
 
 
@@ -82,26 +96,26 @@ public class MovieDetailActivity extends AppCompatActivity implements
         Movie movies = parentIntent.getExtras().getParcelable("Movie");
 
         if (movies != null) {
-            String imageUrl = movies.getMoviePosterURL();
+            imageUrl = movies.getMoviePosterURL();
             Picasso.with(getApplicationContext())
                     .load(imageUrl)
                     .placeholder(R.drawable.image_placeholder_detail)
                     .error(R.drawable.image_placeholder_detail_error)
                     .into(mMoviePoster);
 
-            String movieTitle = movies.getOriginalTitle();
+            movieId = movies.getMovieId();
+
+            movieTitle = movies.getOriginalTitle();
             mMovieTitle.setText(movieTitle);
 
-            String movieReleaseDate = movies.getReleaseDate();
+            movieReleaseDate = movies.getReleaseDate();
             mMovieReleaseDate.setText(movieReleaseDate);
 
-            String movieRating = movies.getVoteAverage();
+            movieRating = movies.getVoteAverage();
             mMovieRating.setText(movieRating);
 
-            String movieOverview = movies.getOverview();
+            movieOverview = movies.getOverview();
             mMovieOverview.setText(movieOverview);
-
-            String movieId = movies.getMovieId();
 
             trailerLoader = new TrailerLoader(this, mTrailerAdapter);
             fetchTrailers(movieId);
@@ -142,6 +156,8 @@ public class MovieDetailActivity extends AppCompatActivity implements
         else{
             //showErrorMessage();
         }
+
+        //reviews = reviewLoader.getReviews();
     }
 
     private void fetchTrailers(String movieId){
@@ -175,10 +191,51 @@ public class MovieDetailActivity extends AppCompatActivity implements
         else{
             //showErrorMessage();
         }
+
+        /*trailers = trailerLoader.getTrailers();
+        Log.d("TRAILER SIZE", trailers.size() + "");*/
     }
 
     @Override
     public void onClick(Trailer currentTrailer) {
 
+    }
+
+    public void addToFavorites(View view) {
+        ContentValues movieContentValues = new ContentValues();
+        /*ContentValues trailersContentValues = new ContentValues();
+        ContentValues reviewsContentValues = new ContentValues();*/
+
+        movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_TITLE, movieTitle);
+        movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_POSTER_URL, imageUrl);
+        movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_OVERVIEW, movieOverview);
+        movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_RELEASE_DATE, movieReleaseDate);
+        movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, movieRating);
+
+        /*for (Trailer trailer: trailers) {
+            trailersContentValues.put(TrailersContract.TrailersEntry.COLUMN_NAME, trailer.getName());
+            trailersContentValues.put(TrailersContract.TrailersEntry.COLUMN_KEY, trailer.getKey());
+            trailersContentValues.put(TrailersContract.TrailersEntry.COLUMN_MOVIE_ID, movieId);
+        }
+
+        for (Review review: reviews) {
+            reviewsContentValues.put(ReviewsContract.ReviewsEntry.COLUMN_AUTHOR, review.getAuthor());
+            reviewsContentValues.put(ReviewsContract.ReviewsEntry.COLUMN_CONTENT, review.getContent());
+            reviewsContentValues.put(ReviewsContract.ReviewsEntry.COLUMN_MOVIE_ID, movieId);
+        }*/
+
+        Uri movieUri = getContentResolver().insert(FavoriteMoviesContract.MoviesEntry.CONTENT_URI, movieContentValues);
+        /*Uri trailerUri = getContentResolver().insert(TrailersContract.TrailersEntry.CONTENT_URI, trailersContentValues);
+        Uri reviewUri = getContentResolver().insert(ReviewsContract.ReviewsEntry.CONTENT_URI, trailersContentValues);*/
+
+        if(movieUri != null) {
+            Toast.makeText(getBaseContext(), movieUri.toString(), Toast.LENGTH_LONG).show();
+        }
+        /*if(trailerUri != null) {
+            Toast.makeText(getBaseContext(), trailerUri.toString(), Toast.LENGTH_LONG).show();
+        }
+        if(reviewUri != null) {
+            Toast.makeText(getBaseContext(), reviewUri.toString(), Toast.LENGTH_LONG).show();
+        }*/
     }
 }

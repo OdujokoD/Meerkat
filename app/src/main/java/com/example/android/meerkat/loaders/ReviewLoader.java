@@ -21,6 +21,7 @@ public class ReviewLoader implements LoaderManager.LoaderCallbacks<List<Review>>
 
     private Context mContext;
     private ReviewAdapter mReviewAdapter;
+    private List<Review> reviews;
 
     public ReviewLoader(Context context, ReviewAdapter reviewAdapter){
         mContext = context;
@@ -69,6 +70,7 @@ public class ReviewLoader implements LoaderManager.LoaderCallbacks<List<Review>>
         if (data != null) {
             Log.d("OnLoadFinished", "Im done");
             mReviewAdapter.setReviewData(data);
+            reviews = data;
         } else {
             //showErrorMessage();
         }
@@ -77,5 +79,9 @@ public class ReviewLoader implements LoaderManager.LoaderCallbacks<List<Review>>
     @Override
     public void onLoaderReset(Loader<List<Review>> loader) {
 
+    }
+
+    public List<Review> getReviews(){
+        return reviews;
     }
 }

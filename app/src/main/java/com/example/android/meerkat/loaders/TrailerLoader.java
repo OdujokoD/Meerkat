@@ -20,6 +20,7 @@ public class TrailerLoader implements LoaderManager.LoaderCallbacks<List<Trailer
 
     private Context mContext;
     private TrailerAdapter mTrailerAdapter;
+    private List<Trailer> trailers;
 
     public TrailerLoader(Context context, TrailerAdapter trailerAdapter){
         mContext = context;
@@ -66,6 +67,7 @@ public class TrailerLoader implements LoaderManager.LoaderCallbacks<List<Trailer
     public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> data) {
         if (data != null) {
             mTrailerAdapter.setTrailerData(data);
+            trailers = data;
         } else {
             //showErrorMessage();
         }
@@ -74,5 +76,9 @@ public class TrailerLoader implements LoaderManager.LoaderCallbacks<List<Trailer
     @Override
     public void onLoaderReset(Loader<List<Trailer>> loader) {
 
+    }
+
+    public List<Trailer> getTrailers(){
+        return trailers;
     }
 }

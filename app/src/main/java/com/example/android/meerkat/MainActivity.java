@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -144,12 +145,6 @@ public class MainActivity extends AppCompatActivity implements
         Class destinationClass = MovieDetailActivity.class;
 
         Intent intentToDestinationClass = new Intent(context, destinationClass);
-        /*intentToDestinationClass.putExtra(MOVIE_IMAGE_EXTRA_TEXT, currentMovie.getMoviePosterURL());
-        intentToDestinationClass.putExtra(MOVIE_TITLE_EXTRA_TEXT, currentMovie.getOriginalTitle());
-        intentToDestinationClass.putExtra(MOVIE_RELEASE_DATE_EXTRA_TEXT, currentMovie.getReleaseDate());
-        intentToDestinationClass.putExtra(MOVIE_RATING_EXTRA_TEXT, currentMovie.getVoteAverage());
-        intentToDestinationClass.putExtra(MOVIE_OVERVIEW_EXTRA_TEXT, currentMovie.getOverview());*/
-
         intentToDestinationClass.putExtra("Movie", currentMovie);
         startActivity(intentToDestinationClass);
     }
@@ -185,7 +180,25 @@ public class MainActivity extends AppCompatActivity implements
 
         int selectedItemId = item.getItemId();
 
-        if(selectedItemId == R.id.action_popular_movies){
+        switch (selectedItemId){
+            case R.id.action_popular_movies:
+                currentCategory = POPULAR_MOVIE_PATH;
+                fetchMovies(currentCategory);
+                return true;
+            case R.id.action_top_rated:
+                currentCategory = TOP_RATED_MOVIE_PATH;
+                fetchMovies(currentCategory);
+                return true;
+            case R.id.action_favorite:
+                Intent intent = new Intent(getApplicationContext(), FavoriteMovies.class);
+                startActivity(intent);
+                break;
+            default:
+                Log.d("Error", "ID does not exist");
+                break;
+        }
+
+        /*if(selectedItemId == R.id.action_popular_movies){
             currentCategory = POPULAR_MOVIE_PATH;
             fetchMovies(currentCategory);
             return true;
@@ -195,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
             currentCategory = TOP_RATED_MOVIE_PATH;
             fetchMovies(currentCategory);
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
