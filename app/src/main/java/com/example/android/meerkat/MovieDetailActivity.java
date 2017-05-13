@@ -60,6 +60,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @BindView(R.id.rv_reviews_list)
     RecyclerView mReviewsRecyclerView;
 
+    private TrailerAdapter mTrailerAdapter;
     private ReviewLoader reviewLoader;
     private TrailerLoader trailerLoader;
 
@@ -82,7 +83,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
         mTrailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mTrailerRecyclerView.setHasFixedSize(true);
 
-        TrailerAdapter mTrailerAdapter = new TrailerAdapter(this);
+        mTrailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
 
         mReviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -191,9 +192,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
         else{
             //showErrorMessage();
         }
-
-        /*trailers = trailerLoader.getTrailers();
-        Log.d("TRAILER SIZE", trailers.size() + "");*/
     }
 
     @Override
