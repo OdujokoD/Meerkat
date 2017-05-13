@@ -10,62 +10,72 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import static com.example.android.meerkat.utilities.Constants.API_KEY;
+import static com.example.android.meerkat.utilities.Constants.IMAGE_BASE_URL;
+import static com.example.android.meerkat.utilities.Constants.MOVIE_BASE_URL;
+import static com.example.android.meerkat.utilities.Constants.MOVIE_REVIEW_PATH;
+import static com.example.android.meerkat.utilities.Constants.MOVIE_TRAILER_PATH;
+import static com.example.android.meerkat.utilities.Constants.PARAM_API_KEY;
+import static com.example.android.meerkat.utilities.Constants.TRAILER_BASE_URL;
+import static com.example.android.meerkat.utilities.Constants.TRAILER_KEY;
+
 public class NetworkUtils {
-
-    final static String POPULAR_MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/popular";
-    final static String TOP_RATED_MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/top_rated";
-    final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
-
-    // TODO: Add your API KEY
-    final static String API_KEY = "";
-    final static String PARAM_API_KEY = "api_key";
-
     // Fetch popular movies
-    public static URL buildPopularMoviesURL(){
-        Uri builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()
+    public static URL buildMovieURL(String category){
+        Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                .appendPath(category)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        }catch (MalformedURLException m){
-            m.printStackTrace();
-        }
-
-        return url;
+        return buildURL(builtUri);
     }
 
-    // Fetch top rated movies
-    public static URL buildTopRatedMoviesURL(){
-        Uri builtUri = Uri.parse(TOP_RATED_MOVIE_BASE_URL).buildUpon()
+    static String buildImageURL(String imagePath, String size){
+        Uri builtUri = Uri.parse(IMAGE_BASE_URL + size + imagePath).buildUpon()
+                .build();
+
+        return buildURL(builtUri).toString();
+    }
+
+    public static URL buildReviewURL(String movieId){
+        Uri reviewUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendPath(MOVIE_REVIEW_PATH)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        }catch (MalformedURLException m){
-            m.printStackTrace();
-        }
-
-        return url;
+        return buildURL(reviewUri);
     }
 
-    public static String buildImageURL(String imagePath){
-        Uri builtUri = Uri.parse(IMAGE_BASE_URL+imagePath).buildUpon()
+    public static URL buildVideosURL(String movieId){
+        Uri videosUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendPath(MOVIE_TRAILER_PATH)
+                .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
 
+        return buildURL(videosUri);
+    }
+
+    static String buildTrailerURL(String key){
+        Uri trailerUri = Uri.parse(TRAILER_BASE_URL).buildUpon()
+                .appendQueryParameter(TRAILER_KEY, key)
+                .build();
+
+        return buildURL(trailerUri).toString();
+    }
+
+    private static URL buildURL(Uri uri){
         URL url = null;
         try {
-            url = new URL(builtUri.toString());
+            url = new URL(uri.toString());
         }catch (MalformedURLException m){
             m.printStackTrace();
         }
 
-        String completeImagePath = url.toString();
+        if (url == null) return null;
 
-        return completeImagePath;
+        return url;
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {

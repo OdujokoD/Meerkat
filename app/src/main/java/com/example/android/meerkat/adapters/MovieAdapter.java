@@ -1,4 +1,4 @@
-package com.example.android.meerkat;
+package com.example.android.meerkat.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.meerkat.R;
 import com.example.android.meerkat.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -35,7 +36,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         Movie movie = movieData.get(position);
         String imageUrl = movie.getMoviePosterURL();
-        Picasso.with(context).load(imageUrl).into(holder.mMoviePoster);
+        Picasso.with(context)
+                .load(imageUrl)
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_placeholder_error)
+                .into(holder.mMoviePoster);
     }
 
     @Override

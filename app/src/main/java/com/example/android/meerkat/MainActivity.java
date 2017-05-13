@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.meerkat.adapters.MovieAdapter;
 import com.example.android.meerkat.model.Movie;
 import com.example.android.meerkat.utilities.JSONParser;
 import com.example.android.meerkat.utilities.NetworkUtils;
@@ -26,36 +29,39 @@ import com.example.android.meerkat.utilities.NetworkUtils;
 import java.net.URL;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickListener{
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.example.android.meerkat.utilities.Constants.FETCH_MOVIE_URL_EXTRA;
+import static com.example.android.meerkat.utilities.Constants.MOVIE_DB_LOADER_ID;
+import static com.example.android.meerkat.utilities.Constants.POPULAR_MOVIE_PATH;
+import static com.example.android.meerkat.utilities.Constants.PREFS_NAME;
+import static com.example.android.meerkat.utilities.Constants.PREFS_PARAM;
+import static com.example.android.meerkat.utilities.Constants.TOP_RATED_MOVIE_PATH;
+
+public class MainActivity extends AppCompatActivity implements
+        MovieAdapter.MovieAdapterOnClickListener, LoaderManager.LoaderCallbacks<List<Movie>>{
+
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mLoadingIndicator;
+    @BindView(R.id.recyclerview_movie_list)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.ll_network_error)
+    LinearLayout mNetworkErrorContainer;
+    @BindView(R.id.tv_network_error_message)
+    TextView mNetworkMessage;
+    @BindView(R.id.btn_retry)
+    Button mRetryNetworkConnection;
 
     private MovieAdapter mMovieAdapter;
-    private ProgressBar mLoadingIndicator;
-    private RecyclerView mRecyclerView;
-    private LinearLayout mNetworkErrorContainer;
-    private TextView mNetworkMessage;
-    private Button mRetryNetworkConnection;
-
-    private static final String PREFS_NAME = "MyPrefsFile";
-    private static final String PREFS_PARAM = "currentCategory";
-    private final static String MOVIE_TITLE_EXTRA_TEXT = "movie title";
-    private final static String MOVIE_IMAGE_EXTRA_TEXT = "movie poster url";
-    private final static String MOVIE_RELEASE_DATE_EXTRA_TEXT = "movie release date";
-    private final static String MOVIE_RATING_EXTRA_TEXT = "movie rating";
-    private final static String MOVIE_OVERVIEW_EXTRA_TEXT = "movie overview";
-    final static String[] movie_categories = {"popular", "top_rated"};
+//    final static String[] movie_categories = {"popular", "top_rated"};
     private String currentCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mLoadingIndicator = (ProgressBar)findViewById(R.id.pb_loading_indicator);
-        mNetworkErrorContainer = (LinearLayout)findViewById(R.id.ll_network_error);
-        mNetworkMessage = (TextView)findViewById(R.id.tv_network_error_message);
-        mRetryNetworkConnection = (Button)findViewById(R.id.btn_retry);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movie_list);
+        ButterKnife.bind(this);
         //LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         GridLayoutManager layoutManager = new GridLayoutManager(this,getSpanCount());
 
@@ -66,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setAdapter(mMovieAdapter);
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        currentCategory = settings.getString(PREFS_PARAM, movie_categories[0]);
+        currentCategory = settings.getString(PREFS_PARAM, POPULAR_MOVIE_PATH);
         fetchMovies(currentCategory);
     }
 
@@ -93,13 +99,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void fetchMovies(String category){
-        URL movieListUrl = null;
-        if(category.equals(movie_categories[0])){
-            movieListUrl = NetworkUtils.buildPopularMoviesURL();
+        URL movieListUrl = NetworkUtils.buildMovieURL(category);
+        /*if(category.equals(movie_categories[0])){
+            movieListUrl = NetworkUtils.buildPopularMoviesURL(category);
         }
         if(category.equals(movie_categories[1])){
             movieListUrl = NetworkUtils.buildTopRatedMoviesURL();
-        }
+        }*/
 
         ConnectivityManager connectivityManager =
                 (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -109,7 +115,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         if(isConnected) {
             hideErrorMessage();
-            new MovieDBTask().execute(movieListUrl);
+            /*MovieDBTask movieDBTask = new MovieDBTask(mLoadingIndicator, mMovieAdapter);
+            movieDBTask.execute(movieListUrl);*/
+
+            Bundle fetchBundle = new Bundle();
+            if (movieListUrl != null) {
+                fetchBundle.putString(FETCH_MOVIE_URL_EXTRA, movieListUrl.toString());
+            }
+
+            LoaderManager loaderManager = getSupportLoaderManager();
+            Loader<List<Movie>> fetchMovieLoader = loaderManager.getLoader(MOVIE_DB_LOADER_ID);
+
+            if(fetchMovieLoader == null){
+                loaderManager.initLoader(MOVIE_DB_LOADER_ID, fetchBundle, this);
+            }
+            else {
+                loaderManager.restartLoader(MOVIE_DB_LOADER_ID, fetchBundle, this);
+            }
         }
         else{
             showErrorMessage();
@@ -122,62 +144,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         Class destinationClass = MovieDetailActivity.class;
 
         Intent intentToDestinationClass = new Intent(context, destinationClass);
-        intentToDestinationClass.putExtra(MOVIE_IMAGE_EXTRA_TEXT, currentMovie.getMoviePosterURL());
+        /*intentToDestinationClass.putExtra(MOVIE_IMAGE_EXTRA_TEXT, currentMovie.getMoviePosterURL());
         intentToDestinationClass.putExtra(MOVIE_TITLE_EXTRA_TEXT, currentMovie.getOriginalTitle());
         intentToDestinationClass.putExtra(MOVIE_RELEASE_DATE_EXTRA_TEXT, currentMovie.getReleaseDate());
         intentToDestinationClass.putExtra(MOVIE_RATING_EXTRA_TEXT, currentMovie.getVoteAverage());
-        intentToDestinationClass.putExtra(MOVIE_OVERVIEW_EXTRA_TEXT, currentMovie.getOverview());
+        intentToDestinationClass.putExtra(MOVIE_OVERVIEW_EXTRA_TEXT, currentMovie.getOverview());*/
 
+        intentToDestinationClass.putExtra("Movie", currentMovie);
         startActivity(intentToDestinationClass);
     }
 
-    private class MovieDBTask extends AsyncTask<URL, Void, List<Movie>>{
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected List<Movie> doInBackground(URL... urls) {
-            if (urls.length == 0) {
-                return null;
-            }
-
-            URL moviesRequestUrl = urls[0];
-
-            try {
-                String jsonWeatherResponse = NetworkUtils
-                        .getResponseFromHttpUrl(moviesRequestUrl);
-
-                JSONParser parser = new JSONParser(jsonWeatherResponse);
-
-                return parser.parseJSON();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> movieList) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieList != null) {
-                mMovieAdapter.setMovieData(movieList);
-            } else {
-                showErrorMessage();
-            }
-        }
-    }
 
     private void hideErrorMessage(){
         mNetworkErrorContainer.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorMessage() {
+    public void showErrorMessage() {
         String errorMessage = "Oops!..\nWe can't seem to connect to the network.";
         mNetworkErrorContainer.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
@@ -203,17 +186,68 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int selectedItemId = item.getItemId();
 
         if(selectedItemId == R.id.action_popular_movies){
-            currentCategory = movie_categories[0];
+            currentCategory = POPULAR_MOVIE_PATH;
             fetchMovies(currentCategory);
             return true;
         }
 
         if(selectedItemId == R.id.action_top_rated){
-            currentCategory = movie_categories[1];
+            currentCategory = TOP_RATED_MOVIE_PATH;
             fetchMovies(currentCategory);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<List<Movie>> onCreateLoader(int id, final Bundle args) {
+        return new AsyncTaskLoader<List<Movie>>(this) {
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                if(args == null){
+                    return;
+                }
+                mLoadingIndicator.setVisibility(View.VISIBLE);
+                forceLoad();
+            }
+
+            @Override
+            public List<Movie> loadInBackground() {
+                String fetchMovieUrlString = args.getString(FETCH_MOVIE_URL_EXTRA);
+                if(fetchMovieUrlString == null){
+                    return null;
+                }
+                try {
+                    URL moviesRequestUrl = new URL(fetchMovieUrlString);
+                    String jsonMovieResponse = NetworkUtils
+                            .getResponseFromHttpUrl(moviesRequestUrl);
+
+                    JSONParser parser = new JSONParser(jsonMovieResponse);
+
+                    return parser.parseMovieJSON();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if (data != null) {
+            mMovieAdapter.setMovieData(data);
+        } else {
+            showErrorMessage();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Movie>> loader) {
+
     }
 }

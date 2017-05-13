@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,6 +59,46 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:layout_margin="12dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="1dp"
+            android:background="@color/divider"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/label_trailers"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_trailers_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="1dp"
+            android:background="@color/divider"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/label_reviews"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_reviews_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp">
+
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 
