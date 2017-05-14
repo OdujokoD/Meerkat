@@ -1,5 +1,7 @@
 package com.example.android.meerkat;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,6 +65,10 @@ public class FavoriteMovies extends AppCompatActivity implements
 
     @Override
     public void onClick(Cursor cursor) {
+        Context context = this;
+        Class destinationClass = FavoriteMovieDetails.class;
 
+        Intent intentToDestinationClass = new Intent(context, destinationClass);
+        startActivity(intentToDestinationClass);
     }
 }

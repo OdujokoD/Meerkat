@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
 import com.example.android.meerkat.adapters.TrailerAdapter;
 import com.example.android.meerkat.model.Trailer;
@@ -67,6 +68,7 @@ public class TrailerLoader implements LoaderManager.LoaderCallbacks<List<Trailer
     public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> data) {
         if (data != null) {
             mTrailerAdapter.setTrailerData(data);
+            Log.d("TrailerLoader", data.size() + "");
             trailers = data;
         } else {
             //showErrorMessage();

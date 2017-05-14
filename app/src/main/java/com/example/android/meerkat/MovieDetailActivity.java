@@ -60,7 +60,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @BindView(R.id.rv_reviews_list)
     RecyclerView mReviewsRecyclerView;
 
-    private TrailerAdapter mTrailerAdapter;
     private ReviewLoader reviewLoader;
     private TrailerLoader trailerLoader;
 
@@ -70,8 +69,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
     private String movieReleaseDate;
     private String movieRating;
     private String movieOverview;
-    private List<Review> reviews;
-    private List<Trailer> trailers;
 
 
     @Override
@@ -83,7 +80,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
         mTrailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mTrailerRecyclerView.setHasFixedSize(true);
 
-        mTrailerAdapter = new TrailerAdapter(this);
+        TrailerAdapter mTrailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
 
         mReviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -128,7 +125,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
     private void fetchReviews(String movieId){
         URL reviewListUrl = NetworkUtils.buildReviewURL(movieId);
-        Log.d("Reviews URL", reviewListUrl.toString());
 
         ConnectivityManager connectivityManager =
                 (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -156,14 +152,12 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
         else{
             //showErrorMessage();
+            Log.d("ERROR", "Error fetching reviews");
         }
-
-        //reviews = reviewLoader.getReviews();
     }
 
     private void fetchTrailers(String movieId){
         URL trailerListUrl = NetworkUtils.buildVideosURL(movieId);
-        Log.d("Trailer URL", trailerListUrl.toString());
 
         ConnectivityManager connectivityManager =
                 (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -191,6 +185,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
         else{
             //showErrorMessage();
+            Log.d("ERROR", "Error fetching trailers");
         }
     }
 
@@ -201,8 +196,11 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
     public void addToFavorites(View view) {
         ContentValues movieContentValues = new ContentValues();
-        /*ContentValues trailersContentValues = new ContentValues();
-        ContentValues reviewsContentValues = new ContentValues();*/
+        ContentValues trailersContentValues = new ContentValues();
+        ContentValues reviewsContentValues = new ContentValues();
+
+        List<Review> reviews = reviewLoader.getReviews();
+        List<Trailer> trailers = trailerLoader.getTrailers();
 
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_TITLE, movieTitle);
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_POSTER_URL, imageUrl);
@@ -210,7 +208,9 @@ public class MovieDetailActivity extends AppCompatActivity implements
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_RELEASE_DATE, movieReleaseDate);
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, movieRating);
 
-        /*for (Trailer trailer: trailers) {
+        Log.d("TRAILER SIZE", trailers.size() + "");
+
+        for (Trailer trailer: trailers) {
             trailersContentValues.put(TrailersContract.TrailersEntry.COLUMN_NAME, trailer.getName());
             trailersContentValues.put(TrailersContract.TrailersEntry.COLUMN_KEY, trailer.getKey());
             trailersContentValues.put(TrailersContract.TrailersEntry.COLUMN_MOVIE_ID, movieId);
@@ -220,20 +220,23 @@ public class MovieDetailActivity extends AppCompatActivity implements
             reviewsContentValues.put(ReviewsContract.ReviewsEntry.COLUMN_AUTHOR, review.getAuthor());
             reviewsContentValues.put(ReviewsContract.ReviewsEntry.COLUMN_CONTENT, review.getContent());
             reviewsContentValues.put(ReviewsContract.ReviewsEntry.COLUMN_MOVIE_ID, movieId);
-        }*/
+        }
 
-        Uri movieUri = getContentResolver().insert(FavoriteMoviesContract.MoviesEntry.CONTENT_URI, movieContentValues);
-        /*Uri trailerUri = getContentResolver().insert(TrailersContract.TrailersEntry.CONTENT_URI, trailersContentValues);
-        Uri reviewUri = getContentResolver().insert(ReviewsContract.ReviewsEntry.CONTENT_URI, trailersContentValues);*/
+        Uri movieUri = getApplicationContext().getContentResolver()
+                .insert(FavoriteMoviesContract.MoviesEntry.CONTENT_URI, movieContentValues);
+        Uri trailerUri = getApplicationContext().getContentResolver()
+                .insert(TrailersContract.TrailersEntry.CONTENT_URI, trailersContentValues);
+        Uri reviewUri = getContentResolver()
+                .insert(ReviewsContract.ReviewsEntry.CONTENT_URI, reviewsContentValues);
 
         if(movieUri != null) {
             Toast.makeText(getBaseContext(), movieUri.toString(), Toast.LENGTH_LONG).show();
         }
-        /*if(trailerUri != null) {
+        if(trailerUri != null) {
             Toast.makeText(getBaseContext(), trailerUri.toString(), Toast.LENGTH_LONG).show();
         }
         if(reviewUri != null) {
             Toast.makeText(getBaseContext(), reviewUri.toString(), Toast.LENGTH_LONG).show();
-        }*/
+        }
     }
 }

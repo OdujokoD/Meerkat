@@ -198,18 +198,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
 
-        /*if(selectedItemId == R.id.action_popular_movies){
-            currentCategory = POPULAR_MOVIE_PATH;
-            fetchMovies(currentCategory);
-            return true;
-        }
-
-        if(selectedItemId == R.id.action_top_rated){
-            currentCategory = TOP_RATED_MOVIE_PATH;
-            fetchMovies(currentCategory);
-            return true;
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 

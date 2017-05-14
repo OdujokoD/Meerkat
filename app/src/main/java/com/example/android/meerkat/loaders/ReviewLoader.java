@@ -68,7 +68,6 @@ public class ReviewLoader implements LoaderManager.LoaderCallbacks<List<Review>>
     @Override
     public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
         if (data != null) {
-            Log.d("OnLoadFinished", "Im done");
             mReviewAdapter.setReviewData(data);
             reviews = data;
         } else {

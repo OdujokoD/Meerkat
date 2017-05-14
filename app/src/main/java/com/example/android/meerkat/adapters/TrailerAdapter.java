@@ -56,10 +56,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         mClickHandler = clickListener;
     }
 
-    public List<Trailer> getTrailers(){
-        return mTrailers;
-    }
-
     public void setTrailerData(List<Trailer> trailers){
         mTrailers = trailers;
         notifyDataSetChanged();

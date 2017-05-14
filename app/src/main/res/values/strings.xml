@@ -8,4 +8,5 @@
     <string name="trailer_icon">Trailer icon</string>
     <string name="star_movie">Star image</string>
     <string name="sort_by_favorite">Favorites</string>
+    <string name="movie_poster">Movie poster</string>
 </resources>

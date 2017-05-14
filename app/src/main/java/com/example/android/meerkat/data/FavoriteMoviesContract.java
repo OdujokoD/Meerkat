@@ -5,7 +5,7 @@ import android.provider.BaseColumns;
 
 public class FavoriteMoviesContract {
 
-    public static final String AUTHORITY = "com.example.android.meerkat";
+    public static final String AUTHORITY = "com.example.android.meerkat.FavoriteMovieContentProvider";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_FAVORITE_MOVIES = "favoriteMovies";
 

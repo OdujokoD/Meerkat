@@ -8,29 +8,29 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
-import com.example.android.meerkat.adapters.FavoriteMovieAdapter;
-import com.example.android.meerkat.data.FavoriteMoviesContract;
+import com.example.android.meerkat.adapters.FavoriteMovieReviewAdapter;
+import com.example.android.meerkat.data.ReviewsContract;
 
-public class FavoriteMovieDbLoader implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ReviewsDbLoader implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private Context mContext;
-    private FavoriteMovieAdapter mMovieAdapter;
+    private FavoriteMovieReviewAdapter mMovieReviewAdapter;
 
-    public FavoriteMovieDbLoader(Context context, FavoriteMovieAdapter movieAdapter){
+    public ReviewsDbLoader(Context context, FavoriteMovieReviewAdapter movieReviewAdapter){
         mContext = context;
-        mMovieAdapter = movieAdapter;
+        mMovieReviewAdapter = movieReviewAdapter;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new AsyncTaskLoader<Cursor>(mContext) {
 
-            Cursor mMovieData = null;
+            Cursor mReviewData = null;
 
             @Override
             protected void onStartLoading() {
-                if (mMovieData != null) {
-                    deliverResult(mMovieData);
+                if (mReviewData != null) {
+                    deliverResult(mReviewData);
                 } else {
                     forceLoad();
                 }
@@ -40,11 +40,11 @@ public class FavoriteMovieDbLoader implements LoaderManager.LoaderCallbacks<Curs
             public Cursor loadInBackground() {
                 try {
                     return getContext().getContentResolver()
-                            .query(FavoriteMoviesContract.MoviesEntry.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            null);
+                            .query(ReviewsContract.ReviewsEntry.CONTENT_URI,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
 
                 } catch (Exception e) {
                     Log.e("LOADER", "Failed to asynchronously load data.");
@@ -54,7 +54,7 @@ public class FavoriteMovieDbLoader implements LoaderManager.LoaderCallbacks<Curs
             }
 
             public void deliverResult(Cursor data) {
-                mMovieData = data;
+                mReviewData = data;
                 super.deliverResult(data);
             }
         };
@@ -62,11 +62,11 @@ public class FavoriteMovieDbLoader implements LoaderManager.LoaderCallbacks<Curs
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mMovieAdapter.swapCursor(data);
+        mMovieReviewAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mMovieAdapter.swapCursor(null);
+        mMovieReviewAdapter.swapCursor(null);
     }
 }

@@ -4,9 +4,9 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class ReviewsContract {
-    public static final String AUTHORITY = "com.example.android.meerkat";
+    public static final String AUTHORITY = "com.example.android.meerkat.ReviewsContentProvider";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-    public static final String PATH_REVIEWS = "reviews";
+    public static final String PATH_REVIEWS = "movieReviews";
 
     public static final class ReviewsEntry implements BaseColumns {
         public static final Uri CONTENT_URI =

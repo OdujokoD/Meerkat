@@ -26,18 +26,32 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".FavoriteMovies">
+        <activity android:name=".FavoriteMovies"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
 
-        <provider
-            android:name="com.example.android.meerkat.providers.FavoriteMovieContentProvider"
-            android:authorities="com.example.android.meerkat"
-            android:exported="false"/>
+        <activity android:name=".FavoriteMovieDetails"
+            android:parentActivityName=".FavoriteMovies">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FavoriteMovies" />
+        </activity>
 
+        <provider
+            android:name=".providers.FavoriteMovieContentProvider"
+            android:authorities="com.example.android.meerkat.FavoriteMovieContentProvider"
+            android:exported="false" />
+        <provider
+            android:name=".providers.ReviewsContentProvider"
+            android:authorities="com.example.android.meerkat.ReviewsContentProvider"
+            android:exported="false" />
+        <provider
+            android:name=".providers.TrailersContentProvider"
+            android:authorities="com.example.android.meerkat.TrailersContentProvider"
+            android:exported="false" />
     </application>
 
 </manifest>
