@@ -190,8 +190,11 @@ public class MovieDetailActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(Trailer currentTrailer) {
-
+    public void trailerOnClick(Trailer currentTrailer) {
+        String trailerUrl = NetworkUtils.buildTrailerURL(currentTrailer.getKey());
+        Intent externalIntent = new Intent(Intent.ACTION_VIEW);
+        externalIntent.setData(Uri.parse(trailerUrl));
+        startActivity(externalIntent);
     }
 
     public void addToFavorites(View view) {
@@ -202,13 +205,12 @@ public class MovieDetailActivity extends AppCompatActivity implements
         List<Review> reviews = reviewLoader.getReviews();
         List<Trailer> trailers = trailerLoader.getTrailers();
 
+        movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieId);
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_TITLE, movieTitle);
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_POSTER_URL, imageUrl);
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_OVERVIEW, movieOverview);
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_RELEASE_DATE, movieReleaseDate);
         movieContentValues.put(FavoriteMoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, movieRating);
-
-        Log.d("TRAILER SIZE", trailers.size() + "");
 
         for (Trailer trailer: trailers) {
             trailersContentValues.put(TrailersContract.TrailersEntry.COLUMN_NAME, trailer.getName());
@@ -228,15 +230,5 @@ public class MovieDetailActivity extends AppCompatActivity implements
                 .insert(TrailersContract.TrailersEntry.CONTENT_URI, trailersContentValues);
         Uri reviewUri = getContentResolver()
                 .insert(ReviewsContract.ReviewsEntry.CONTENT_URI, reviewsContentValues);
-
-        if(movieUri != null) {
-            Toast.makeText(getBaseContext(), movieUri.toString(), Toast.LENGTH_LONG).show();
-        }
-        if(trailerUri != null) {
-            Toast.makeText(getBaseContext(), trailerUri.toString(), Toast.LENGTH_LONG).show();
-        }
-        if(reviewUri != null) {
-            Toast.makeText(getBaseContext(), reviewUri.toString(), Toast.LENGTH_LONG).show();
-        }
     }
 }

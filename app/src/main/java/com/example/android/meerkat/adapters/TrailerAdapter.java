@@ -2,6 +2,7 @@ package com.example.android.meerkat.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,8 @@ import com.example.android.meerkat.model.Trailer;
 import java.util.List;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder>{
-    private List<Trailer> mTrailers;
 
+    private List<Trailer> mTrailers;
     private final TrailerAdapterOnClickListener mClickHandler;
 
     @Override
@@ -49,7 +50,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     }
 
     public interface TrailerAdapterOnClickListener{
-        void onClick(Trailer currentTrailer);
+        void trailerOnClick(Trailer currentTrailer);
     }
 
     public TrailerAdapter(TrailerAdapterOnClickListener clickListener){
@@ -61,11 +62,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         notifyDataSetChanged();
     }
 
-    public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView mTrailerName;
 
-        public TrailerAdapterViewHolder(View view){
+        TrailerAdapterViewHolder(View view){
             super(view);
             mTrailerName = (TextView) view.findViewById(R.id.tv_trailer_name);
             view.setOnClickListener(this);
@@ -74,7 +75,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            mClickHandler.onClick(getTrailerByPosition(adapterPosition));
+            Log.d("OnClick", "Im working");
+            mClickHandler.trailerOnClick(getTrailerByPosition(adapterPosition));
         }
     }
 }

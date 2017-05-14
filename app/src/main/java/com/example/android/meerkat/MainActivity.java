@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements
     Button mRetryNetworkConnection;
 
     private MovieAdapter mMovieAdapter;
-//    final static String[] movie_categories = {"popular", "top_rated"};
     private String currentCategory;
 
     @Override
@@ -204,14 +203,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<List<Movie>>(this) {
+            List<Movie> movieListResult;
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                if(args == null){
-                    return;
-                }
                 mLoadingIndicator.setVisibility(View.VISIBLE);
-                forceLoad();
+                if(movieListResult != null){
+                    deliverResult(movieListResult);
+                }
+                else {
+                    forceLoad();
+                }
             }
 
             @Override
@@ -233,6 +235,12 @@ public class MainActivity extends AppCompatActivity implements
                     e.printStackTrace();
                     return null;
                 }
+            }
+
+            @Override
+            public void deliverResult(List<Movie> data) {
+                movieListResult = data;
+                super.deliverResult(data);
             }
         };
     }

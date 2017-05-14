@@ -2,6 +2,7 @@ package com.example.android.meerkat.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -79,7 +80,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            // get reference of the current movie and send over to the Click listener
             mClickHandler.onClick(getMovieByPosition(adapterPosition));
         }
     }

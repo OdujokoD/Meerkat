@@ -57,7 +57,7 @@ public class NetworkUtils {
         return buildURL(videosUri);
     }
 
-    static String buildTrailerURL(String key){
+    public static String buildTrailerURL(String key){
         Uri trailerUri = Uri.parse(TRAILER_BASE_URL).buildUpon()
                 .appendQueryParameter(TRAILER_KEY, key)
                 .build();

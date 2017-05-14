@@ -78,6 +78,10 @@ public class FavoriteMovieDetails extends AppCompatActivity implements
         fetchReviews();
     }
 
+    private void fetchMovieDetails(){
+
+    }
+
     private void fetchTrailers(){
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<List<Trailer>> fetchTrailerLoader = loaderManager.getLoader(TRAILER_LOADER_ID);
