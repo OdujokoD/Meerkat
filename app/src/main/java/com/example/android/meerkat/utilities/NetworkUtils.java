@@ -1,7 +1,8 @@
 package com.example.android.meerkat.utilities;
 
 import android.net.Uri;
-import android.util.Log;
+
+import com.example.android.meerkat.BuildConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-import static com.example.android.meerkat.utilities.Constants.API_KEY;
 import static com.example.android.meerkat.utilities.Constants.IMAGE_BASE_URL;
 import static com.example.android.meerkat.utilities.Constants.MOVIE_BASE_URL;
 import static com.example.android.meerkat.utilities.Constants.MOVIE_REVIEW_PATH;
@@ -24,7 +24,7 @@ public class NetworkUtils {
     public static URL buildMovieURL(String category){
         Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendPath(category)
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                 .build();
 
         return buildURL(builtUri);
@@ -41,7 +41,7 @@ public class NetworkUtils {
         Uri reviewUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendPath(movieId)
                 .appendPath(MOVIE_REVIEW_PATH)
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                 .build();
 
         return buildURL(reviewUri);
@@ -51,7 +51,7 @@ public class NetworkUtils {
         Uri videosUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendPath(movieId)
                 .appendPath(MOVIE_TRAILER_PATH)
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                 .build();
 
         return buildURL(videosUri);

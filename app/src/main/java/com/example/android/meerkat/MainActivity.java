@@ -6,11 +6,15 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -38,6 +42,7 @@ import static com.example.android.meerkat.utilities.Constants.MOVIE_DB_LOADER_ID
 import static com.example.android.meerkat.utilities.Constants.POPULAR_MOVIE_PATH;
 import static com.example.android.meerkat.utilities.Constants.PREFS_NAME;
 import static com.example.android.meerkat.utilities.Constants.PREFS_PARAM;
+import static com.example.android.meerkat.utilities.Constants.RECYCLER_VIEW_STATE;
 import static com.example.android.meerkat.utilities.Constants.TOP_RATED_MOVIE_PATH;
 
 public class MainActivity extends AppCompatActivity implements
@@ -56,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private MovieAdapter mMovieAdapter;
     private String currentCategory;
+    private GridLayoutManager layoutManager;
+    private Parcelable recyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         //LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,getSpanCount());
+        layoutManager = new GridLayoutManager(this,getSpanCount());
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -74,6 +81,32 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         currentCategory = settings.getString(PREFS_PARAM, POPULAR_MOVIE_PATH);
         fetchMovies(currentCategory);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        recyclerViewState = layoutManager.onSaveInstanceState();
+        outState.putParcelable(RECYCLER_VIEW_STATE, recyclerViewState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if(savedInstanceState != null){
+            recyclerViewState= savedInstanceState.getParcelable(RECYCLER_VIEW_STATE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(recyclerViewState != null){
+            layoutManager.onRestoreInstanceState(recyclerViewState);
+        }
     }
 
     @Override
@@ -166,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

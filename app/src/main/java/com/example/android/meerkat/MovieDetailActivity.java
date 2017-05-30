@@ -224,11 +224,11 @@ public class MovieDetailActivity extends AppCompatActivity implements
             reviewsContentValues.put(ReviewsContract.ReviewsEntry.COLUMN_MOVIE_ID, movieId);
         }
 
-        Uri movieUri = getApplicationContext().getContentResolver()
+        getApplicationContext().getContentResolver()
                 .insert(FavoriteMoviesContract.MoviesEntry.CONTENT_URI, movieContentValues);
-        Uri trailerUri = getApplicationContext().getContentResolver()
+        getApplicationContext().getContentResolver()
                 .insert(TrailersContract.TrailersEntry.CONTENT_URI, trailersContentValues);
-        Uri reviewUri = getContentResolver()
+        getContentResolver()
                 .insert(ReviewsContract.ReviewsEntry.CONTENT_URI, reviewsContentValues);
     }
 }

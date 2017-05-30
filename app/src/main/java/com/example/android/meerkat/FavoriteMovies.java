@@ -9,15 +9,23 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.android.meerkat.adapters.FavoriteMovieAdapter;
 import com.example.android.meerkat.adapters.MovieAdapter;
+import com.example.android.meerkat.data.FavoriteMoviesContract;
 import com.example.android.meerkat.loaders.FavoriteMovieDbLoader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.android.meerkat.utilities.Constants.MOVIE_ID;
 import static com.example.android.meerkat.utilities.Constants.MOVIE_LOADER_ID;
+import static com.example.android.meerkat.utilities.Constants.MOVIE_NAME;
+import static com.example.android.meerkat.utilities.Constants.OVERVIEW;
+import static com.example.android.meerkat.utilities.Constants.POSTER_URL;
+import static com.example.android.meerkat.utilities.Constants.RATING;
+import static com.example.android.meerkat.utilities.Constants.RELEASE_DATE;
 
 public class FavoriteMovies extends AppCompatActivity implements
         FavoriteMovieAdapter.FavoriteMovieAdapterOnClickListener{
@@ -67,8 +75,26 @@ public class FavoriteMovies extends AppCompatActivity implements
     public void onClick(Cursor cursor) {
         Context context = this;
         Class destinationClass = FavoriteMovieDetails.class;
+        String posterUrl = cursor.getString(cursor.getColumnIndex(
+                FavoriteMoviesContract.MoviesEntry.COLUMN_POSTER_URL));
+        String movieName = cursor.getString(cursor.getColumnIndex(
+                FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_TITLE));
+        String movieOverview = cursor.getString(cursor.getColumnIndex(
+                FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_OVERVIEW));
+        String movieRating = cursor.getString(cursor.getColumnIndex(
+                FavoriteMoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE));
+        String releaseDate = cursor.getString(cursor.getColumnIndex(
+                FavoriteMoviesContract.MoviesEntry.COLUMN_RELEASE_DATE));
+        String movieId = cursor.getString(cursor.getColumnIndex(
+                FavoriteMoviesContract.MoviesEntry.COLUMN_MOVIE_ID));
 
         Intent intentToDestinationClass = new Intent(context, destinationClass);
+        intentToDestinationClass.putExtra(POSTER_URL, posterUrl);
+        intentToDestinationClass.putExtra(MOVIE_NAME, movieName);
+        intentToDestinationClass.putExtra(OVERVIEW, movieOverview);
+        intentToDestinationClass.putExtra(RATING, movieRating);
+        intentToDestinationClass.putExtra(RELEASE_DATE, releaseDate);
+        intentToDestinationClass.putExtra(MOVIE_ID, movieId);
         startActivity(intentToDestinationClass);
     }
 }

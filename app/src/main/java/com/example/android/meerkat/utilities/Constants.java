@@ -7,6 +7,7 @@ public class Constants {
     public static final String PREFS_PARAM = "currentCategory";
     public static final int MOVIE_DB_LOADER_ID = 77;
     public static final String FETCH_MOVIE_URL_EXTRA = "fetch";
+    public static final String RECYCLER_VIEW_STATE = "state";
 
     /*=================  Movie Details activity Constants ====================== */
     public static final int TRAILER_LOADER_ID = 88;
@@ -24,8 +25,6 @@ public class Constants {
     final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     final static String TRAILER_BASE_URL = "https://www.youtube.com/watch";
     final static String TRAILER_KEY = "v";
-    // TODO: Add your API KEY
-    final static String API_KEY = "";
     final static String PARAM_API_KEY = "api_key";
 
 
@@ -42,4 +41,11 @@ public class Constants {
     public static final int TRAILER = 300;
     public static final int TRAILER_WITH_ID = 301;
 
+    /*=================  Favorites movies details Constants ====================== */
+    public static final String POSTER_URL = "poster_url";
+    public static final String MOVIE_NAME = "movie_name";
+    public static final String MOVIE_ID = "movie_id";
+    public static final String OVERVIEW = "overview";
+    public static final String RATING = "rating";
+    public static final String RELEASE_DATE = "release_date";
 }

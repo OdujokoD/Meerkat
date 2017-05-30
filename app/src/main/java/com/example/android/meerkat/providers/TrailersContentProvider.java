@@ -110,7 +110,7 @@ public class TrailersContentProvider extends ContentProvider{
             case TRAILER_WITH_ID:
                 String id = uri.getPathSegments().get(1);
                 mDbHelper = db.delete(TrailersContract.TrailersEntry.TABLE_NAME,
-                        "_id=?", new String[]{id});
+                        "movieId=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

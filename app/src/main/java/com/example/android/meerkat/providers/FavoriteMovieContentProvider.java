@@ -108,7 +108,7 @@ public class FavoriteMovieContentProvider extends ContentProvider{
             case MOVIE_WITH_ID:
                 String id = uri.getPathSegments().get(1);
                 mDbHelper = db.delete(FavoriteMoviesContract.MoviesEntry.TABLE_NAME,
-                        "_id=?", new String[]{id});
+                        "movieId=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

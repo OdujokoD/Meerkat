@@ -109,7 +109,7 @@ public class ReviewsContentProvider extends ContentProvider{
             case REVIEW_WITH_ID:
                 String id = uri.getPathSegments().get(1);
                 mDbHelper = db.delete(ReviewsContract.ReviewsEntry.TABLE_NAME,
-                        "_id=?", new String[]{id});
+                        "movieId=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
